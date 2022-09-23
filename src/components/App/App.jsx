@@ -11,8 +11,11 @@ export class App extends Component {
     filter: '',
   };
   componentDidMount() {
-    const state = JSON.parse(localStorage.getItem('state'));
-    if (localStorage.getItem('state')) this.setState(state);
+    let state = localStorage.getItem('state');
+    if (state) {
+      state = JSON.parse(localStorage.getItem('state'));
+      this.setState(state);
+    }
   }
   componentDidUpdate() {
     localStorage.setItem('state', JSON.stringify(this.state));
@@ -31,6 +34,7 @@ export class App extends Component {
   };
   onAddContact = ({ e, onResetInput }) => {
     e.preventDefault();
+
     const { name, number } = e.target;
 
     // console.log(e.target.number.value);
