@@ -1,27 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { nanoid } from 'nanoid';
 
 import { Titel, Container } from './App.styled';
 import ContactList from 'components/ContactList/ContactList';
 import ContactForm from 'components/ContactForm/ContactForm';
 import Filter from 'components/Filter/Filter';
-
-const useLocalStorage = (key, defaultValue) => {
-  // абстактные значения клоторые возврааются при каждом вызове данной функции
-  const [state, setState] = useState(
-    () => JSON.parse(localStorage.getItem(`${key}`)) ?? defaultValue
-  );
-  // на каждый сгенерированый вызов данной функции мы вешаем эфект записи в локал сторейдж используя ключ с пропсов и только что созданый стейт
-  useEffect(() => {
-    window.localStorage.setItem(`${key}`, JSON.stringify(state));
-  }, [key, state]);
-
-  return [state, setState];
-};
+import { useLocalStorage } from 'hooks/useLocalStorege';
 
 export const App = () => {
   const [contacts, setContacts] = useLocalStorage(`contacts`, []);
-  const [filter, setFilter] = useLocalStorage(`filter`, '');
+  const [filter, setFilter] = useState('');
 
   const onChangeForma = obj => {
     const { value } = obj.target;
