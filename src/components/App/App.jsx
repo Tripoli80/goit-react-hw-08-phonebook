@@ -1,95 +1,84 @@
-import React, { Component } from 'react';
+import { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 
 import { Titel, Container } from './App.styled';
 import ContactList from 'components/ContactList/ContactList';
 import ContactForm from 'components/ContactForm/ContactForm';
 import Filter from 'components/Filter/Filter';
-export class App extends Component {
-  state = {
-    contacts: [],
-    filter: '',
+
+const useLocalStorage = (key, defaultValue) => {
+  // абстактные значения клоторые возврааются при каждом вызове данной функции
+  const [state, setState] = useState(
+    () => JSON.parse(localStorage.getItem(`${key}`)) ?? defaultValue
+  );
+  // на каждый сгенерированый вызов данной функции мы вешаем эфект записи в локал сторейдж используя ключ с пропсов и только что созданый стейт
+  useEffect(() => {
+    window.localStorage.setItem(`${key}`, JSON.stringify(state));
+  }, [key, state]);
+
+  return [state, setState];
+};
+
+export const App = () => {
+  const [contacts, setContacts] = useLocalStorage(`contacts`, []);
+  const [filter, setFilter] = useLocalStorage(`filter`, '');
+
+  const onChangeForma = obj => {
+    const { value } = obj.target;
+    setFilter(value);
   };
-  componentDidMount() {
-    let state = localStorage.getItem('state');
-    if (state) {
-      state = JSON.parse(localStorage.getItem('state'));
-      this.setState(state);
-    }
-  }
-  componentDidUpdate() {
-    localStorage.setItem('state', JSON.stringify(this.state));
-  }
-  onChangeForma = obj => {
-    const { name, value } = obj.target;
-    this.setState({
-      [name]: value,
-    });
-  };
-  checkExistContact = ({ dataToCheck, keyWhereCheck }) => {
-    const res = this.state.contacts.filter(
-      item => item[keyWhereCheck].toLowerCase() === dataToCheck.toLowerCase()
+
+  const checkExistContact = ({ dataToCheck, keyWhereCheck }) => {
+    const res = contacts.filter(
+      item => item.name.toLowerCase() === dataToCheck.toLowerCase()
     );
     return res.length;
   };
-  onAddContact = ({ e, onResetInput }) => {
+  const onAddContact = ({ e, onResetInput }) => {
     e.preventDefault();
-
     const { name, number } = e.target;
 
-    // console.log(e.target.number.value);
-
-    if (
-      this.checkExistContact({ dataToCheck: name.value, keyWhereCheck: 'name' })
-    ) {
+    if (checkExistContact({ dataToCheck: name.value })) {
       alert(`${name.value} already in book`);
       return;
     }
-    this.setState(prevState => {
-      const neewArr = [
-        ...prevState.contacts,
+
+    setContacts(prevContacts => {
+      return [
+        ...prevContacts,
         {
           id: nanoid(),
-          [name.name]: name.value,
-          [number.name]: number.value,
+          name: name.value,
+          number: number.value,
         },
       ];
-      return {
-        contacts: neewArr,
-      };
-    }, onResetInput());
-  };
-
-  onRemoveContact = id => {
-    const resContacts = this.state.contacts.filter(item => item.id !== id);
-    this.setState({
-      contacts: resContacts,
     });
+    onResetInput();
   };
 
-  getVisibleContacts = () => {
-    // console.log(contacts);
-    const resContacts = this.state.contacts.filter(item =>
-      item.name.toLowerCase().includes(this.state.filter.toLowerCase())
+  const onRemoveContact = id => {
+    const resContacts = contacts.filter(item => item.id !== id);
+    setContacts(resContacts);
+  };
+
+  const getVisibleContacts = () => {
+    const resContacts = contacts.filter(item =>
+      item.name.toLowerCase().includes(filter.toLowerCase())
     );
     // console.log('first');
     return resContacts;
   };
-
-  render() {
-    const visiblContactsList = this.getVisibleContacts();
-    return (
-      <Container>
-        <Titel> Phone Book</Titel>
-        <ContactForm state={this.state} onAddContact={this.onAddContact} />
-        <Filter state={this.state} onChangeForma={this.onChangeForma} />
-        <Titel> Contact List</Titel>
-        <ContactList
-          state={this.state}
-          visiblContactsList={visiblContactsList}
-          onRemoveContact={this.onRemoveContact}
-        />
-      </Container>
-    );
-  }
-}
+  const visiblContactsList = getVisibleContacts();
+  return (
+    <Container>
+      <Titel> Phone Book</Titel>
+      <ContactForm onAddContact={onAddContact} />
+      <Filter filter={filter} onChangeForma={onChangeForma} />
+      <Titel> Contact List</Titel>
+      <ContactList
+        visiblContactsList={visiblContactsList}
+        onRemoveContact={onRemoveContact}
+      />
+    </Container>
+  );
+};
