@@ -1,4 +1,5 @@
 import { ListContacts, ContactItem, RemoveBtn } from './ContactList.styled';
+
 const ContactList = props => {
   const { onRemoveContact, visiblContactsList } = props;
   const contactItem = visiblContactsList.map(item => (
