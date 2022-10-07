@@ -6,14 +6,21 @@ import ContactList from 'components/ContactList/ContactList';
 import ContactForm from 'components/ContactForm/ContactForm';
 import Filter from 'components/Filter/Filter';
 import { useLocalStorage } from 'hooks/useLocalStorege';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  addContact,
+  changeFilter,
+  removeContact,
+} from 'components/redux/store';
 
 export const App = () => {
-  const [contacts, setContacts] = useLocalStorage(`contacts`, []);
-  const [filter, setFilter] = useState('');
+  const dispatch = useDispatch();
+  const contacts = useSelector(state => state.contacts);
+  const filter = useSelector(state => state.filter);
 
   const onChangeForma = obj => {
     const { value } = obj.target;
-    setFilter(value);
+    dispatch(changeFilter(value));
   };
 
   const checkExistContact = ({ dataToCheck, keyWhereCheck }) => {
@@ -22,6 +29,7 @@ export const App = () => {
     );
     return res.length;
   };
+
   const onAddContact = ({ e, onResetInput }) => {
     e.preventDefault();
     const { name, number } = e.target;
@@ -31,32 +39,27 @@ export const App = () => {
       return;
     }
 
-    setContacts(prevContacts => {
-      return [
-        ...prevContacts,
-        {
-          id: nanoid(),
-          name: name.value,
-          number: number.value,
-        },
-      ];
-    });
+    const newContactToAdd = {
+      id: nanoid(),
+      name: name.value,
+      number: number.value,
+    };
+    dispatch(addContact(newContactToAdd));
     onResetInput();
   };
 
   const onRemoveContact = id => {
-    const resContacts = contacts.filter(item => item.id !== id);
-    setContacts(resContacts);
+    dispatch(removeContact(id));
   };
 
   const getVisibleContacts = () => {
     const resContacts = contacts.filter(item =>
       item.name.toLowerCase().includes(filter.toLowerCase())
     );
-    // console.log('first');
     return resContacts;
   };
   const visiblContactsList = getVisibleContacts();
+
   return (
     <Container>
       <Titel> Phone Book</Titel>
