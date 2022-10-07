@@ -23,7 +23,12 @@ export const filterSlice = createSlice({
   },
 });
 
+
+
 export const reduces = combineReducers({
   contacts: contactsSlice.reducer,
   filter: filterSlice.reducer,
 });
+
+export const { addContact, removeContact } = contactsSlice.actions;
+export const { changeFilter } = filterSlice.actions;

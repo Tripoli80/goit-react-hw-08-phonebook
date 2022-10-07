@@ -1,17 +1,15 @@
-import { useState } from 'react';
 import { nanoid } from 'nanoid';
-
 import { Titel, Container } from './App.styled';
 import ContactList from 'components/ContactList/ContactList';
 import ContactForm from 'components/ContactForm/ContactForm';
 import Filter from 'components/Filter/Filter';
-import { useLocalStorage } from 'hooks/useLocalStorege';
+
 import { useDispatch, useSelector } from 'react-redux';
 import {
   addContact,
   changeFilter,
   removeContact,
-} from 'components/redux/store';
+} from 'components/redux/Slice';
 
 export const App = () => {
   const dispatch = useDispatch();

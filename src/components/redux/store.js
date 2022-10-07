@@ -11,7 +11,7 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 
-import { reduces, filterSlice, contactsSlice } from './Slice';
+import { reduces } from './Slice';
 
 const rootReducer = reduces;
 const persistConfig = {
@@ -21,8 +21,7 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-export const { changeFilter } = filterSlice.actions;
-export const { addContact, removeContact } = contactsSlice.actions;
+
 export const store = configureStore({
   reducer: persistedReducer,
   middleware: getDefaultMiddleware =>
