@@ -1,9 +1,11 @@
+import Loader from 'components/Loader/Loader';
 import { useState } from 'react';
 import { InputName, ContactFormAdd, SubmitBtn } from './ContactForm.styled';
 
 const ContactForm = ({ onAddContact }) => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+  const [isSending, setIsSending] = useState(false);
 
   const onChangeForma = obj => {
     const { value } = obj.target;
@@ -18,7 +20,7 @@ const ContactForm = ({ onAddContact }) => {
         break;
       }
       default:
-        console.log(`Якась помилка з назвою інпута`)
+        console.log(`Якась помилка з назвою інпута`);
     }
   };
 
@@ -30,7 +32,10 @@ const ContactForm = ({ onAddContact }) => {
   return (
     <div>
       <ContactFormAdd
-        onSubmit={e => onAddContact({ e: e, onResetInput: onResetInput })}
+        onSubmit={e => {
+          setIsSending(true);
+          onAddContact({ e: e, onResetInput: onResetInput, setIsSending:setIsSending });
+        }}
       >
         <InputName
           placeholder="Name"
@@ -52,7 +57,9 @@ const ContactForm = ({ onAddContact }) => {
           required
           onChange={e => onChangeForma(e)}
         />
-        <SubmitBtn> Add to my contact</SubmitBtn>
+        <SubmitBtn disabled={isSending}>
+          Add to my contact{isSending && <Loader width={16} />}
+        </SubmitBtn>
       </ContactFormAdd>
     </div>
   );

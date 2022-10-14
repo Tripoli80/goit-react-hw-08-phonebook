@@ -9,7 +9,7 @@ display: flex;
     
 `
 export  const RemoveBtn = styled.button`
-display: block;
+display: flex;
 
 margin-left: auto;
 background: red
