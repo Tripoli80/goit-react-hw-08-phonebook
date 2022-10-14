@@ -10,12 +10,26 @@ import {
   changeFilter,
   removeContact,
 } from 'components/redux/Slice';
+import {
+  fetchContacts,
+  addContacts,
+  _removeContact,
+} from 'components/redux/services/phoneShelfAPI';
+import { useEffect } from 'react';
+import Loader from 'components/Loader/Loader';
 
 export const App = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts);
+  let contacts;
   const filter = useSelector(state => state.filter);
+  const { items, isLoading, error } = useSelector(state => state.contacts);
 
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
+
+  contacts = items;
+  // console.log("🚀 ~ file: App.jsx ~ line 30 ~ App ~ contacts", contacts)
   const onChangeForma = obj => {
     const { value } = obj.target;
     dispatch(changeFilter(value));
@@ -28,8 +42,9 @@ export const App = () => {
     return res.length;
   };
 
-  const onAddContact = ({ e, onResetInput }) => {
+  const onAddContact = ({ e, onResetInput ,setIsSending}) => {
     e.preventDefault();
+
     const { name, number } = e.target;
 
     if (checkExistContact({ dataToCheck: name.value })) {
@@ -42,12 +57,24 @@ export const App = () => {
       name: name.value,
       number: number.value,
     };
-    dispatch(addContact(newContactToAdd));
-    onResetInput();
+
+    addContacts(newContactToAdd, dispatch).then(id => {
+      newContactToAdd.id = id;
+      // dispatch(addContact(newContactToAdd));
+      setIsSending(false)
+      onResetInput();
+    });
+  
+   
   };
 
-  const onRemoveContact = id => {
-    dispatch(removeContact(id));
+  const onRemoveContact = async( id) => {
+    // console.log('id', id)
+    _removeContact(id, dispatch).then(()=> {
+                            console.log(id);
+                            dispatch(removeContact(id));
+                             });
+    // dispatch(fetchContacts());
   };
 
   const getVisibleContacts = () => {
@@ -64,9 +91,11 @@ export const App = () => {
       <ContactForm onAddContact={onAddContact} />
       <Filter filter={filter} onChangeForma={onChangeForma} />
       <Titel> Contact List</Titel>
+      {isLoading&&!items.length && <Loader />}
       <ContactList
         visiblContactsList={visiblContactsList}
         onRemoveContact={onRemoveContact}
+        isLoading={isLoading}
       />
     </Container>
   );

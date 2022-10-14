@@ -5,8 +5,6 @@ const ContactFormAdd = styled.form`
 `;
 
 const InputName = styled.input`
-
-
   margin: 15px;
   padding: 10px;
   border: 0;
@@ -26,10 +24,11 @@ const InputName = styled.input`
 `;
 
 const SubmitBtn = styled.button`
+  display: flex;
   margin: 15px;
   padding: 10px;
   border: none;
-  background-color: #3f51b5;
+  background-color: #51b53f;
   color: #fff;
   font-weight: 600;
   border-radius: 5px;
@@ -40,11 +39,10 @@ const SubmitBtn = styled.button`
   transition-duration: 500ms;
   outline: none;
   :active {
-    /* border: 0; */
     box-shadow: 0 0 15px 15px rgba(0, 0, 0, 0.8);
-
-    /* background-color: #526456; */
-    /* color: #535353; */
+  }
+  :disabled {
+    background-color: #9a9a9a;
   }
 `;
 
