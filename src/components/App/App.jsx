@@ -22,7 +22,9 @@ export const App = () => {
   const dispatch = useDispatch();
   let contacts;
   const filter = useSelector(state => state.filter);
+
   const { items, isLoading } = useSelector(state => state.contacts);
+
 
   useEffect(() => {
     dispatch(fetchContacts());
