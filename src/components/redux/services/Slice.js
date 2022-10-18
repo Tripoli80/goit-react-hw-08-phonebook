@@ -1,12 +1,19 @@
 import { combineReducers, createSlice } from '@reduxjs/toolkit';
-import { fetchAllContacts, removeContact, addContact } from './operations';
+import {
+  fetchAllContacts,
+  removeContact,
+  addContact,
+  logOut,
+} from './operations';
+import { usersSlice } from './usersSlice';
+const initialState = {
+  items: [],
+  isLoading: false,
+  error: null,
+};
 export const contactsSlice = createSlice({
   name: 'contacts',
-  initialState: {
-    items: [],
-    isLoading: false,
-    error: null,
-  },
+  initialState: initialState,
 
   extraReducers: {
     [fetchAllContacts.pending](state) {
@@ -14,9 +21,19 @@ export const contactsSlice = createSlice({
     },
     [fetchAllContacts.fulfilled](state, action) {
       state.isLoading = false;
+
+      if (action.payload === 401) {
+        state.items = [];
+        state.error = null;
+        return
+      }
+      state.isLoading = false;
       state.items = action.payload;
     },
     [fetchAllContacts.rejected](state, action) {
+      if (action.payload === 401) {
+        state = { ...initialState };
+      }
       state.isLoading = false;
       state.error = action.payload;
     },
@@ -37,6 +54,11 @@ export const contactsSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+    [logOut.fulfilled](state) {
+      state.items = [];
+      state.isLoading = false;
+      state.error = null;
+    },
   },
 });
 
@@ -51,8 +73,10 @@ export const filterSlice = createSlice({
 });
 
 export const reduces = combineReducers({
+  users: usersSlice.reducer,
   contacts: contactsSlice.reducer,
   filter: filterSlice.reducer,
+  // notify: notifySlice.reducer,
 });
 
 export const { changeFilter } = filterSlice.actions;

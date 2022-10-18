@@ -4,9 +4,11 @@ import {
   addContact,
   checkExistContact,
 } from 'components/redux/services/operations';
+import { useIsLoading } from 'hooks/hooks';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { InputName, ContactFormAdd, SubmitBtn } from './ContactForm.styled';
+import { NotificationManager } from 'react-notifications';
 
 const ContactForm = () => {
   const [name, setName] = useState('');
@@ -14,8 +16,7 @@ const ContactForm = () => {
   const [isSending, setIsSending] = useState(false);
 
   const { items } = useSelector(getContacts);
-const dispatch = useDispatch();
-  
+  const dispatch = useDispatch();
 
   const onChangeForma = obj => {
     const { value } = obj.target;
@@ -42,7 +43,12 @@ const dispatch = useDispatch();
   const handleSubmit = e => {
     e.preventDefault();
     if (checkExistContact(name, items)) {
-      alert(`${name} already in book`);
+      setIsSending(true);
+
+      NotificationManager.warning('Try another name', `"${name.toUpperCase()}" already in book`);
+
+      setIsSending(false);
+
       return;
     }
     const data = {

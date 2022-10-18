@@ -1,38 +1,36 @@
-import { Titel, Container } from './App.styled';
-import ContactList from 'components/ContactList/ContactList';
-import ContactForm from 'components/ContactForm/ContactForm';
-import Filter from 'components/Filter/Filter';
-import Loader from 'components/Loader/Loader';
-
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchAllContacts } from 'components/redux/services/operations';
-import { useEffect } from 'react';
-import { getContacts, getFilter } from 'components/redux/selectors';
+import { Routes, Route } from 'react-router-dom';
+import 'react-notifications/lib/notifications.css';
+import LogIn from 'components/LogIn/LogIn';
+import SingUp from 'components/SingUp/SingUp';
+import MenuBar from 'components/MenuBar/MenuBar';
+import ContactBook from 'components/ContactBook/ContactBook';
+import { RestrictedRoute } from 'components/redux/routes/RestrictedRoute';
+import { PrivateRoute } from 'components/redux/routes/PrivateRoute';
+import { NotificationContainer } from 'react-notifications';
 
 export const App = () => {
-  const dispatch = useDispatch();
-  const {value} = useSelector(getFilter);
-  const { items, isLoading } = useSelector(getContacts);
-
-  useEffect(() => {
-    dispatch(fetchAllContacts());
-  }, [dispatch]);
-
-  const getVisibleContacts = () => {
-    const contacts = items.filter(item =>
-      item.name.toLowerCase().includes(value.toLowerCase())
-    );
-    return contacts;
-  };
-
   return (
-    <Container>
-      <Titel> Phone Book</Titel>
-      <ContactForm />
-      <Filter  />
-      <Titel> Contact List</Titel>
-      {isLoading && !items.length && <Loader />}
-      <ContactList visiblContactsList={getVisibleContacts()} />
-    </Container>
+    <>
+      <MenuBar />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <PrivateRoute redirectTo="/sigin" component={<ContactBook />} />
+          }
+        />
+
+        <Route
+          path="/sigin"
+          element={<RestrictedRoute redirectTo="/" component={<LogIn />} />}
+        />
+        <Route
+          path="/sigup"
+          element={<RestrictedRoute redirectTo="/" component={<SingUp />} />}
+        />
+      </Routes>
+      {/* {isLOgIn&&<SnackNotify message={`Ви авторизовані як ${name} `}/>} */}
+      <NotificationContainer />
+    </>
   );
 };
