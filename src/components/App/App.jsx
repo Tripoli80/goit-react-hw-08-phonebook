@@ -6,7 +6,7 @@ import Filter from 'components/Filter/Filter';
 
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  addContact,
+  
   changeFilter,
   removeContact,
 } from 'components/redux/Slice';
@@ -22,7 +22,9 @@ export const App = () => {
   const dispatch = useDispatch();
   let contacts;
   const filter = useSelector(state => state.filter);
-  const { items, isLoading, error } = useSelector(state => state.contacts);
+
+  const { items, isLoading } = useSelector(state => state.contacts);
+
 
   useEffect(() => {
     dispatch(fetchContacts());
