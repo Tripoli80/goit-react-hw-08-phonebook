@@ -28,7 +28,7 @@ export const addContacts = async (data, dispatch) => {
 export const _removeContact = async (id, dispatch) => {
   try {
     dispatch(fetchingInProgress());
-    const response = await axios.delete(`/contacts/${id}`);
+   await axios.delete(`/contacts/${id}`);
     dispatch(isLoadingDisanable());
 
     //   dispatch(fetchingSuccess(response.data));
