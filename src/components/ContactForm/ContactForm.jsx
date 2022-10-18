@@ -1,11 +1,21 @@
 import Loader from 'components/Loader/Loader';
+import { getContacts } from 'components/redux/selectors';
+import {
+  addContact,
+  checkExistContact,
+} from 'components/redux/services/operations';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { InputName, ContactFormAdd, SubmitBtn } from './ContactForm.styled';
 
-const ContactForm = ({ onAddContact }) => {
+const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
   const [isSending, setIsSending] = useState(false);
+
+  const { items } = useSelector(getContacts);
+const dispatch = useDispatch();
+  
 
   const onChangeForma = obj => {
     const { value } = obj.target;
@@ -29,12 +39,29 @@ const ContactForm = ({ onAddContact }) => {
     setNumber('');
   };
 
+  const handleSubmit = e => {
+    e.preventDefault();
+    if (checkExistContact(name, items)) {
+      alert(`${name} already in book`);
+      return;
+    }
+    const data = {
+      name: name,
+      number: number,
+    };
+
+    dispatch(addContact(data)).then(() => {
+      setIsSending(false);
+      onResetInput();
+    });
+  };
+
   return (
     <div>
       <ContactFormAdd
         onSubmit={e => {
           setIsSending(true);
-          onAddContact({ e: e, onResetInput: onResetInput, setIsSending:setIsSending });
+          handleSubmit(e);
         }}
       >
         <InputName

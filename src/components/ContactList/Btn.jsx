@@ -4,7 +4,7 @@ import { RemoveBtn } from './ContactList.styled';
 
 const Btn = props => {
   const [isDel, setIsDel] = useState(false);
-  const { onRemoveContact, id, isLoading } = props;
+  const { onRemoveContact, id } = props;
 
   return (
     <RemoveBtn
@@ -13,7 +13,7 @@ const Btn = props => {
         onRemoveContact(id);
       }}
     >
-      D {isLoading && isDel && <Loader width={15} />}
+      remove {isDel && <Loader width={15} />}
     </RemoveBtn>
   );
 };

@@ -8,19 +8,10 @@ import {
   REGISTER,
 } from 'redux-persist';
 
-import { reduces } from './Slice';
-
-const rootReducer = reduces;
-// const persistConfig = {
-//   key: 'root',
-//   storage,
-// };
-
-// const persistedReducer = persistReducer(persistConfig, rootReducer);
-
+import { reduces } from './services/Slice';
 
 export const store = configureStore({
-  reducer: rootReducer,
+  reducer: reduces,
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {
@@ -28,6 +19,3 @@ export const store = configureStore({
       },
     }),
 });
-
-
-// export const persistor = persistStore(store);

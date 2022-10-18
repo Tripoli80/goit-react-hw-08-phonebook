@@ -11,6 +11,6 @@ display: flex;
 export  const RemoveBtn = styled.button`
 display: flex;
 
-margin-left: auto;
+margin-left: 20px;
 background: red
 `
