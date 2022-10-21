@@ -4,16 +4,19 @@ import { RemoveBtn } from './ContactList.styled';
 
 const Btn = props => {
   const [isDel, setIsDel] = useState(false);
-  const { onRemoveContact, id } = props;
+  const { onClick, id, nameBtn, userdata } = props;
+  const { name, number } = { ...userdata };
 
   return (
     <RemoveBtn
-      onClick={() => {
-        setIsDel(true);
-        onRemoveContact(id);
+      onClick={event => {
+        if (nameBtn !== 'Edit') setIsDel(true);
+        onClick(event, id);
       }}
+      data-user-name={name}
+      data-user-number={number}
     >
-      remove {isDel && <Loader width={15} />}
+      {nameBtn} {isDel && <Loader width={15} />}
     </RemoveBtn>
   );
 };

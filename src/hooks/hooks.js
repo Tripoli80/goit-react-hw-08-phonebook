@@ -1,9 +1,11 @@
 import {
     getAuth,
+
   getIsLoading,
   getNotifyMassage,
   getNotifyStatus,
   getReflashing,
+
   getSigIn,
   getUserName,
 } from 'components/redux/selectors';
@@ -12,9 +14,11 @@ import { useSelector } from 'react-redux';
 export const useAuth = () => {
   return useSelector(getSigIn);
 };
+
 export const useReflashing= () => {
     return useSelector(getReflashing);
   };
+
 
 export const useNotify = () => {
   return useSelector(getNotifyStatus);
@@ -30,4 +34,5 @@ export const useUserName= () => {
   };
   export const useIsLoading= () => {
     return useSelector(getIsLoading);
+
   };

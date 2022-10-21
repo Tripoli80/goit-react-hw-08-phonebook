@@ -19,8 +19,7 @@ export const App = () => {
             <PrivateRoute redirectTo="/sigin" component={<ContactBook />} />
           }
         />
-
-        <Route
+      <Route
           path="/sigin"
           element={<RestrictedRoute redirectTo="/" component={<LogIn />} />}
         />

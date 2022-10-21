@@ -16,7 +16,8 @@ import { reduces } from './services/Slice';
 const persistConfig = {
   key: 'root',
   storage,
-  blacklist: ['filter'] 
+
+  blacklist: ['filter'],
 };
 
 const persistedReducer = persistReducer(persistConfig, reduces);

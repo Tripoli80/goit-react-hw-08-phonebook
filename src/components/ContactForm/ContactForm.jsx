@@ -3,63 +3,67 @@ import { getContacts } from 'components/redux/selectors';
 import {
   addContact,
   checkExistContact,
+  fetchAllContacts,
+  updateContact,
 } from 'components/redux/services/operations';
-import { useIsLoading } from 'hooks/hooks';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { InputName, ContactFormAdd, SubmitBtn } from './ContactForm.styled';
 import { NotificationManager } from 'react-notifications';
 
-const ContactForm = () => {
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+const ContactForm = ({
+  name,
+  number,
+  onChangeForma,
+  onResetInput,
+  isButtonEdit,
+  userId,
+}) => {
   const [isSending, setIsSending] = useState(false);
-
   const { items } = useSelector(getContacts);
   const dispatch = useDispatch();
 
-  const onChangeForma = obj => {
-    const { value } = obj.target;
-
-    switch (obj.target.name) {
-      case 'name': {
-        setName(value);
-        break;
-      }
-      case 'number': {
-        setNumber(value);
-        break;
-      }
-      default:
-        console.log(`Якась помилка з назвою інпута`);
-    }
-  };
-
-  const onResetInput = () => {
-    setName('');
-    setNumber('');
-  };
-
   const handleSubmit = e => {
     e.preventDefault();
-    if (checkExistContact(name, items)) {
-      setIsSending(true);
 
-      NotificationManager.warning('Try another name', `"${name.toUpperCase()}" already in book`);
+    if (!isButtonEdit) {
+      if (checkExistContact(name, items)) {
+        setIsSending(true);
 
-      setIsSending(false);
+        NotificationManager.warning(
+          'Try another name',
+          `"${name.toUpperCase()}" already in book`
+        );
 
-      return;
+        setIsSending(false);
+
+        return;
+      }
+      const data = {
+        name: name,
+        number: number,
+      };
+
+      dispatch(addContact(data)).then(() => {
+        setIsSending(false);
+        onResetInput();
+      });
     }
-    const data = {
-      name: name,
-      number: number,
-    };
 
-    dispatch(addContact(data)).then(() => {
+    if (isButtonEdit) {
+      const data = {
+        name: name,
+        number: number,
+      };
+
+      dispatch(
+        updateContact({data, id:userId})).then(() => {
+        setIsSending(false);
+        onResetInput();
+        dispatch(fetchAllContacts());
+      });
       setIsSending(false);
-      onResetInput();
-    });
+    }
   };
 
   return (
@@ -90,9 +94,16 @@ const ContactForm = () => {
           required
           onChange={e => onChangeForma(e)}
         />
-        <SubmitBtn disabled={isSending}>
-          Add to my contact{isSending && <Loader width={16} />}
-        </SubmitBtn>
+        {!isButtonEdit ? (
+          <SubmitBtn disabled={isSending}>
+            Add to my contact{isSending && <Loader width={16} />}
+          </SubmitBtn>
+        ) : (
+          <SubmitBtn disabled={isSending}>
+            {`Change contact ${name}`}
+            {isSending && <Loader width={16} />}
+          </SubmitBtn>
+        )}
       </ContactFormAdd>
     </div>
   );

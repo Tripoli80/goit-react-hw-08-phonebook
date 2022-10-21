@@ -16,7 +16,6 @@ export const fetchAllContacts = createAsyncThunk(
   'fetchAllContacts',
   async (_, thunkAPI) => {
     const state = thunkAPI.getState();
-
     if (!state.users.auth) {
       return;
     }
@@ -53,6 +52,17 @@ export const removeContact = createAsyncThunk(
     try {
       await axios.delete(`/contacts/${id}`);
       return id;
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e.message);
+    }
+  }
+);
+export const updateContact = createAsyncThunk(
+  'removeContact',
+  async ({ id, data }, thunkAPI) => {
+    try {
+      const updatedContact = await axios.patch(`/contacts/${id}`, data);
+      return updatedContact.data;
     } catch (e) {
       return thunkAPI.rejectWithValue(e.message);
     }
@@ -98,7 +108,10 @@ export const singIn = createAsyncThunk('singIn', async (data, thunkAPI) => {
 
 export const logOut = createAsyncThunk('logOut', async (data, thunkAPI) => {
   try {
+    console.log('logout');
     await axios.post('/users/logout');
+    console.log('logout2');
+
     token.unSet();
     NotificationManager.success('Success message', 'Sucsess logOut');
   } catch (e) {
