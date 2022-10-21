@@ -26,9 +26,11 @@ const ContactForm = ({
   const handleSubmit = e => {
     e.preventDefault();
 
+
     if (!isButtonEdit) {
       if (checkExistContact(name, items)) {
         setIsSending(true);
+
 
         NotificationManager.warning(
           'Try another name',
