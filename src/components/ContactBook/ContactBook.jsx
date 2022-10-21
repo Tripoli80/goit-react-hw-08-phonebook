@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import Box from '@mui/material/Box';
 
 import { Titel, Container } from './ContactBook.styled';
 import ContactList from 'components/ContactList/ContactList';
@@ -52,12 +53,10 @@ export default function ContactBook() {
     setNumber(number);
     setUserIdToEdit(id);
     setIsButtonEdit(true);
-   
   };
 
   const getVisibleContacts = () => {
     if (!Array.isArray(items)) {
-      console.log('🚀 ~ typeof items', items);
       return [];
     }
     const contacts = items.filter(item =>
@@ -66,20 +65,25 @@ export default function ContactBook() {
     return contacts;
   };
   return (
-    <Container>
-      <Titel> Phone Book</Titel>
-      <ContactForm
-        name={name}
-        number={number}
-        isButtonEdit={isButtonEdit}
-        onChangeForma={onChangeForma}
-        userId={userIdToEdit}
-        onResetInput={onResetInput}
-      />
-      <Filter />
-      <Titel> Contact List</Titel>
-      {isLoading && !items.length && <Loader />}
-      <ContactList visiblContactsList={getVisibleContacts()} onEdit={onEdit} />
-    </Container>
+    <Box sx={{ flexGrow: 1 }}>
+      <Container>
+        <Titel> Phone Book</Titel>
+        <ContactForm
+          name={name}
+          number={number}
+          isButtonEdit={isButtonEdit}
+          onChangeForma={onChangeForma}
+          userId={userIdToEdit}
+          onResetInput={onResetInput}
+        />
+        <Filter />
+        <Titel> Contact List</Titel>
+        {isLoading && !items.length && <Loader />}
+        <ContactList
+          visiblContactsList={getVisibleContacts()}
+          onEdit={onEdit}
+        />
+      </Container>
+    </Box>
   );
 }

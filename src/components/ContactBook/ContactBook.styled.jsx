@@ -6,7 +6,6 @@ margin: 25px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 600px;
   margin-left: auto;
   margin-right: auto;
   background-color: #ffffff;
@@ -17,7 +16,7 @@ export const Titel = styled.div`
   text-align: center;
   font-size: 24px;
   padding: 20px;
-  width: 500px;
+  width: 90%;
   margin-left: auto;
   margin-right: auto;
 `;

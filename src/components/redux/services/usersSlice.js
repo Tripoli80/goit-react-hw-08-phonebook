@@ -22,12 +22,16 @@ export const usersSlice = createSlice({
       }
     },
     [logOut.pending](state) {
+      state.isLoggedIn = false;
+
       state.isRefreshing = true;
+    },
+    [logOut.rejected](state) {
+      state.isRefreshing = false;
+      state.isLoggedIn = true;
     },
     [logOut.fulfilled](state) {
       state.isRefreshing = false;
-
-
       state.isLoggedIn = false;
       state.user = {};
       state.auth = null;
