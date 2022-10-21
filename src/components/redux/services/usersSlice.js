@@ -10,6 +10,7 @@ export const usersSlice = createSlice({
     },
     auth: null,
     isLoggedIn: false,
+
     isRefreshing: false,
   },
   extraReducers: {
@@ -26,12 +27,14 @@ export const usersSlice = createSlice({
     [logOut.fulfilled](state) {
       state.isRefreshing = false;
 
+
       state.isLoggedIn = false;
       state.user = {};
       state.auth = null;
     },
- 
+
     [singUp.fulfilled](state, action) {
+
       const { user, token } = action.payload;
       state.isLoggedIn = true;
 

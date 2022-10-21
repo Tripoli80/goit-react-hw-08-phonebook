@@ -16,7 +16,6 @@ export const fetchAllContacts = createAsyncThunk(
   'fetchAllContacts',
   async (_, thunkAPI) => {
     const state = thunkAPI.getState();
-
     if (!state.users.auth) {
       return;
     }

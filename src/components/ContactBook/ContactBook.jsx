@@ -13,14 +13,13 @@ export default function ContactBook() {
   const dispatch = useDispatch();
   const { value } = useSelector(getFilter);
   const { items, isLoading } = useSelector(getContacts);
-
   useEffect(() => {
     dispatch(fetchAllContacts());
   }, [dispatch]);
 
   const getVisibleContacts = () => {
     if (!Array.isArray(items)) {
-      console.log("🚀 ~ typeof items",items)
+      console.log('🚀 ~ typeof items', items);
       return [];
     }
     const contacts = items.filter(item =>
